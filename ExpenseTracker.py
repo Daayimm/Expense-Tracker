@@ -28,7 +28,44 @@ def readCSV():
         
         print(e)
         return[] 
+def viewCSV():
+    rows = list(readCSV())
+    
+    for r in rows:
+        print(r)
 
+
+def deleteRow(id):
+    rows = list(readCSV())
+    rows = [r for r in rows if r[0]!= str(id)]
+        
+    with open('expenses.csv','w',newline='') as f:
+        
+        writer = csv.writer(f)
+        writer.writerows(rows)
+
+def sumamry(month):
+    rows = list(readCSV())
+    sum = 0
+    
+    filter_rows = []
+    
+    if month is not None:
+        for r in rows:
+            date_parts = r[1].split('-')
+            row_month = int(date_parts[1])
+            if row_month == month:
+                filter_rows.append(r)
+        rows = filter_rows
+        for r in rows:
+            sum += float(r[3])
+        print(sum)
+    else:
+        for r in rows:
+            sum += float(r[3])
+        print(sum)
+    
+            
 parser = argparse.ArgumentParser(description="Expense Tracker")
 subparsers = parser.add_subparsers(dest="command")
 
@@ -47,7 +84,12 @@ summaryParser.add_argument('--month',type = int)
 args = parser.parse_args()
 if args.command == "add":
     CSVWriter(args.desc,args.amount)
-
+elif args.command == 'delete':
+    deleteRow(args.ID)
+elif args.command == 'summary':
+    sumamry(args.month)
+elif args.command == 'view':
+    viewCSV()
 
 
 
